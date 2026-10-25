@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# Wednesday launcher — the only command you need:  ./wednesday
+# First run sets everything up (asks before any large download); later runs start instantly.
+set -euo pipefail
+
+HERE="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)"
+VENV="$HERE/.venv"
+PY="$VENV/bin/python"
+
+case "${1:-}" in
+  setup)     shift; exec bash "$HERE/scripts/setup.sh" "$@" ;;
+  uninstall) shift; exec bash "$HERE/scripts/uninstall.sh" "$@" ;;
+  test)      shift; exec "$PY" -m pytest -q "$HERE/tests" "$@" ;;
+esac
+
+if [[ ! -x "$PY" ]] || [[ ! -f "$HERE/.venv/.wednesday-setup-ok" ]]; then
+  echo "First run — setting Wednesday up. (Nothing large is downloaded without asking.)"
+  bash "$HERE/scripts/setup.sh"
+fi
+
+export PYTHONPATH="$HERE/src${PYTHONPATH:+:$PYTHONPATH}"
+cd "$HERE"
+exec "$PY" -m wednesday "$@"

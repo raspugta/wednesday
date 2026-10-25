@@ -1,0 +1,203 @@
+# Wednesday permission policy.
+# Enforced in code by wednesday/agent/permissions.py — the model never sees or edits this file
+# (the config directories are on the deny list below, for reads AND writes).
+#
+# Three tiers:
+#   READ      — runs immediately (read-only inspection inside read_roots)
+#   APPROVAL  — you must click Approve in the panel (or type y in `wednesday chat`)
+#   BLOCKED   — refused outright; the model is told why
+#
+# Override by copying this file to ~/.config/wednesday/permissions.yaml (lists are replaced, not merged).
+
+read_roots:
+  - "~"
+  - /tmp
+  - /usr/share/doc
+  - /etc/os-release
+
+write_roots:
+  - "~/Wednesday/workspace"
+  # Add your project directories here, e.g.:
+  # - "~/ros2_ws"
+  # - "~/projects"
+
+deny_paths:
+  - "~/.ssh"
+  - "~/.gnupg"
+  - "~/.aws"
+  - "~/.azure"
+  - "~/.config/gcloud"
+  - "~/.kube"
+  - "~/.docker"
+  - "~/.netrc"
+  - "~/.pgpass"
+  - "~/.git-credentials"
+  - "~/.password-store"
+  - "~/.local/share/keyrings"
+  - "~/.mozilla"
+  - "~/.config/google-chrome"
+  - "~/.config/chromium"
+  - "~/.config/BraveSoftware"
+  - "~/.config/Code/User/globalStorage"
+  - "~/.config/gh"
+  - "~/.config/wednesday"
+  - "~/.local/state/wednesday"
+  - "~/.local/share/wednesday"
+  - "~/Wednesday/config"
+  - "~/Wednesday/src"
+  - "~/Wednesday/.env"
+  - "~/.claude"
+  - /etc/shadow
+  - /etc/gshadow
+  - /etc/sudoers
+  - /etc/sudoers.d
+  - /root
+  - /proc
+  - /sys/firmware
+
+# File-name patterns that are never readable/writable, anywhere.
+deny_name_patterns:
+  - ".env"
+  - ".env.*"
+  - "*.pem"
+  - "*.key"
+  - "*.p12"
+  - "*.pfx"
+  - "*.kdbx"
+  - "id_rsa*"
+  - "id_ed25519*"
+  - "id_ecdsa*"
+  - "*credentials*"
+  - "*secret*"
+  - "*.keystore"
+  - "*token*"
+
+commands:
+  # Read-only programs that run without asking (arguments are still checked).
+  auto_allow:
+    - ls
+    - pwd
+    - cat
+    - head
+    - tail
+    - wc
+    - grep
+    - rg
+    - find
+    - tree
+    - file
+    - stat
+    - du
+    - df
+    - free
+    - uptime
+    - uname
+    - hostname
+    - whoami
+    - id
+    - date
+    - echo
+    - which
+    - nvidia-smi
+    - lscpu
+    - lsblk
+    - lsusb
+    - lspci
+    - sensors
+    - ps
+    - sort
+    - uniq
+    - cut
+    - diff
+    - basename
+    - dirname
+    - realpath
+    - nproc
+    - hyprctl
+    - ros2
+    - colcon
+    - git
+    - python3
+    - python
+    - pip
+    - pip3
+    - node
+    - npm
+    - cargo
+    - gcc
+    - g++
+    - cmake
+    - arduino-cli
+
+  # Sub-commands that are read-only for multi-purpose tools. Anything else → APPROVAL.
+  readonly_subcommands:
+    git: [status, log, diff, show, branch, remote, rev-parse, ls-files, blame, describe, tag, shortlog, config --get, stash list]
+    hyprctl: [version, monitors, workspaces, clients, activewindow, layers, binds, devices, getoption]
+    ros2: [topic list, topic info, topic hz, node list, node info, service list, pkg list, pkg prefix, interface show, doctor, param list]
+    colcon: [list, info]
+    python3: [--version, -V]
+    python: [--version, -V]
+    pip: [list, show, --version, freeze]
+    pip3: [list, show, --version, freeze]
+    node: [--version, -v]
+    npm: [ls, list, --version, view, outdated]
+    cargo: [--version, tree, metadata]
+    gcc: [--version]
+    g++: [--version]
+    cmake: [--version]
+    arduino-cli: [board list, core list, lib list, version]
+
+  # Refused no matter what the model says. Run these yourself if you really mean it.
+  blocked:
+    - sudo
+    - su
+    - doas
+    - pkexec
+    - dd
+    - mkfs
+    - mkfs.*
+    - mke2fs
+    - shred
+    - wipefs
+    - fdisk
+    - sfdisk
+    - cfdisk
+    - parted
+    - gparted
+    - shutdown
+    - reboot
+    - poweroff
+    - halt
+    - init
+    - telinit
+    - passwd
+    - chpasswd
+    - useradd
+    - userdel
+    - usermod
+    - visudo
+    - crontab
+    - iptables
+    - nft
+    - ufw
+    - mount
+    - umount
+    - insmod
+    - rmmod
+    - modprobe
+    - chattr
+    - setfacl
+    - killall
+    - pkill
+    - nc
+    - ncat
+    - socat
+    - secret-tool
+    - gpg
+    - ssh-add
+    - ssh-keygen
+    - env
+    - printenv
+    - xdotool
+    - ydotool
+    - wtype

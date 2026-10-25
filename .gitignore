@@ -1,0 +1,31 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.egg-info/
+.pytest_cache/
+build/
+dist/
+
+# Secrets — never commit
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+token
+
+# Runtime data lives in ~/.local/share/wednesday and ~/.local/state/wednesday, but just in case:
+*.gguf
+*.onnx
+*.db
+*.db-wal
+*.db-shm
+*.wav
+logs/
+workspace/*
+!workspace/.gitkeep
+
+# Editor/office lock files
+.~lock.*#
+*.swp
